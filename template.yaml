@@ -1,0 +1,147 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  next-app
+
+  Sample SAM Template for next-app
+  
+Globals:
+  Function:
+    Timeout: 3
+
+Parameters:
+  CFSPACE:
+    Type: String
+    Description: The contentful space
+  CFKEY:
+    Type: String
+    Description: The contentful key    
+
+Resources:
+  RestApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowMethods: "'POST, GET'"
+        AllowHeaders: "'content-type'"
+        AllowOrigin: "'*'"
+        MaxAge: "'600'"
+
+  NextWebFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: next-web/
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
+      Environment:
+        Variables:
+          CF_SPACE: !Ref 'CFSPACE'
+          CF_KEY: !Ref 'CFKEY'
+      Events:
+        NextAPI:
+          Type: Api 
+          Properties:
+            Path: /
+            RestApiId: !Ref RestApi
+            Method: get
+
+  NextAPIFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: next/
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
+      Environment:
+        Variables:
+          CF_SPACE: !Ref 'CFSPACE'
+          CF_KEY: !Ref 'CFKEY'      
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: NextCustomerProfile
+      Events:
+        NextAPI:
+          Type: Api 
+          Properties:
+            Path: /next
+            RestApiId: !Ref RestApi
+            Method: get
+
+  NextAllustomersAPIFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: next-customers/
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
+      Environment:
+        Variables:
+          CF_SPACE: !Ref 'CFSPACE'
+          CF_KEY: !Ref 'CFKEY'      
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: NextCustomerProfile
+      Events:
+        NextAPI:
+          Type: Api 
+          Properties:
+            Path: /next-customers
+            RestApiId: !Ref RestApi
+            Method: get  
+
+  NextResultsAPIFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: next-results/
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
+      Environment:
+        Variables:
+          CF_SPACE: !Ref 'CFSPACE'
+          CF_KEY: !Ref 'CFKEY'      
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: NextCustomerProfile
+      Events:
+        NextAPI:
+          Type: Api 
+          Properties:
+            Path: /next-results
+            RestApiId: !Ref RestApi
+            Method: get            
+  NextUpdateProfileFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: next-update-profile/
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
+      Environment:
+        Variables:
+          CF_SPACE: !Ref 'CFSPACE'
+          CF_KEY: !Ref 'CFKEY'      
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: NextCustomerProfile
+      Events:
+        NextAPI:
+          Type: Api 
+          Properties:
+            Path: /next-update-profile
+            RestApiId: !Ref RestApi
+            Method: post
+
+  NextCustomerProfile:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: NextCustomerProfile
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+Outputs:
+  NextApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/next/"
