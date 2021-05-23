@@ -8,6 +8,9 @@ on:
 jobs:
   build_test_and_package:
     runs-on: ubuntu-latest
+    environment:   
+      name: test
+      url: https://k38eh10y9f.execute-api.eu-west-1.amazonaws.com/Prod/   
     steps:
       - uses: actions/checkout@v2
       - name: Configure AWS credentials
