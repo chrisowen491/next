@@ -21,4 +21,4 @@ jobs:
         run: sam build
       - name: SAM Deploy
         run:
-          sam deploy --no-fail-on-empty-changeset --stack-name next-app --s3-bucket ${{ secrets.AWS_DEPLOY_BUCKET }} --s3-prefix ${{ github.repository }} --parameter-overrides EnvName=ci1 S3BucketName=${{ secrets.AWS_DEPLOY_BUCKET }} OpenAPIFile=${{ github.repository }}/openapi-${{ steps.generate-uuid.outputs.uuid }}.yaml CFSPACE=${{ secrets.CF_SPACE }} CFKEY=${{ secrets.CF_KEY }}  Deployment=AllAtOnce --capabilities CAPABILITY_IAM
+          sam deploy --no-fail-on-empty-changeset --stack-name next-app --s3-bucket ${{ secrets.AWS_DEPLOY_BUCKET }} --s3-prefix ${{ github.repository }} --parameter-overrides CFSPACE=${{ secrets.CF_SPACE }} CFKEY=${{ secrets.CF_KEY }}  Deployment=AllAtOnce --capabilities CAPABILITY_IAM
