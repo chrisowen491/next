@@ -23,7 +23,9 @@ exports.lambdaHandler = async (event, context) => {
 
         for(var i=0; i < content.items.length; i++) {
             var qb = content.items[i]
-            if((qb.fields.conditionDisplayRule && eval(qb.fields.conditionDisplayRule)) || (!qb.fields.conditionDisplayRule)) {
+            if((qb.fields.conditionDisplayRule && eval(qb.fields.conditionDisplayRule)) 
+                || (!qb.fields.conditionDisplayRule) 
+                || (!qb.fields.requiredFields && customer.fields.likesToSkip)) {
                 questionBlock = qb.fields.questionBlock.fields.block;
                 optionsBlock = qb.fields.questionBlock.fields.optionsBlock;
                 break;

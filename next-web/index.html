@@ -126,7 +126,18 @@
                 "skip": {
                     "title": "Skip Question",
                     "click": function() {
-                        renderNextPage();
+                        var val = {};
+                        val.id = $( "#customerId" ).val();
+                        val.likesToSkip = true;
+                        $("#form").remove();
+                        $.ajax({
+                            type: "POST",
+                            url: "/Prod/next-update-profile",
+                            data: JSON.stringify(val),
+                            contentType: "application/json",
+                            complete: function (data) {
+                                renderNextPage();
+                            }});
                     }
                 }
             }
