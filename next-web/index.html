@@ -151,7 +151,8 @@
                 $("#customerId").append("<option value='"+data.customer.id+"'>Someone New</option>");
                 $( "#customerId" ).val(data.customer.id);
             }
-            if(!data.blocks) {
+            if(!data.block) {
+                // No Questions To Answer
                 $("#form").remove();
                 $("#results").show();
                 $("#question-set").hide();
