@@ -20,18 +20,19 @@ exports.lambdaHandler = async (event, context) => {
 
             if(item.fields.requiredForResults) {
                 for (var tagIdx in item.metadata.tags) {
-                    var tag = item.metadata.tags[tagIdx];
-                    if(tags[tag.sys.id]) {
+                    var tag = item.metadata.tags[tagIdx].sys.id;
+                    if(tags[tag]) {
                         if(item.fields.requiredFields) {
                             for (var fieldIdx in item.fields.requiredFields) {
-                                tags[tag.sys.id].requiredAnswers.push(item.fields.requiredFields[fieldIdx])
+                                tags[tag].requiredAnswers.push(item.fields.requiredFields[fieldIdx])
                             }
+                            console.log(JSON.stringify(tags));
                         }
                     } else {
-                        tags[tag.sys.id] = {
-                            context: tag.sys.id,
-                            title: tag.sys.id,
-                            requiredAnswers: item.fields.requiredFields ? item.fields.requiredFields : [] 
+                        tags[tag] = {
+                            context: tag,
+                            title: tag,
+                            requiredAnswers: item.fields.requiredFields ? JSON.parse(JSON.stringify(item.fields.requiredFields)) : [] 
                         }
                     }
                 }

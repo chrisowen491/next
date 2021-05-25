@@ -167,6 +167,10 @@
                 });
             } else {
                 $("#dynamic_form").append("<div id='form'></div>");
+                var options = {
+                    form: pageOptions.form,
+                    fields: data.optionsBlock ? data.optionsBlock[0] : {}
+                };
                 $("#form").alpaca({
                     "data": data.customer,
                     "schema": data.blocks[0],

@@ -19,12 +19,15 @@ exports.lambdaHandler = async (event, context) => {
         var customer = await getProfile(customerId);
 
         var questionBlock = [];
+        var optionsBlock = [];
         for(var i=0; i < content.items.length; i++) {
             var qb = content.items[i]
             if(qb.fields.conditionDisplayRule && eval(qb.fields.conditionDisplayRule)) {
                 questionBlock.push(qb.fields.questionBlock.fields.block)
+                optionsBlock.push(qb.fields.questionBlock.fields.optionsBlock)
             } else if(!qb.fields.conditionDisplayRule){
                 questionBlock.push(qb.fields.questionBlock.fields.block)
+                optionsBlock.push(qb.fields.questionBlock.fields.optionsBlock)
             }
         }
 
@@ -34,6 +37,7 @@ exports.lambdaHandler = async (event, context) => {
             'body': JSON.stringify({
                 customer: customer.fields,
                 blocks: questionBlock,
+                optionsBlock: optionsBlock
             })
         }
     } catch(ex) {
