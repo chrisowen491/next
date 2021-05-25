@@ -18,16 +18,15 @@ exports.lambdaHandler = async (event, context) => {
         var content = await client.getEntries({'metadata.tags.sys.id[in]': tag, 'content_type': 'questionBlockEntry', order: 'fields.priority'});
         var customer = await getProfile(customerId);
 
-        var questionBlock = [];
-        var optionsBlock = [];
+        var questionBlock;
+        var optionsBlock;
+
         for(var i=0; i < content.items.length; i++) {
             var qb = content.items[i]
-            if(qb.fields.conditionDisplayRule && eval(qb.fields.conditionDisplayRule)) {
-                questionBlock.push(qb.fields.questionBlock.fields.block)
-                optionsBlock.push(qb.fields.questionBlock.fields.optionsBlock)
-            } else if(!qb.fields.conditionDisplayRule){
-                questionBlock.push(qb.fields.questionBlock.fields.block)
-                optionsBlock.push(qb.fields.questionBlock.fields.optionsBlock)
+            if((qb.fields.conditionDisplayRule && eval(qb.fields.conditionDisplayRule)) || (!qb.fields.conditionDisplayRule)) {
+                questionBlock = qb.fields.questionBlock.fields.block;
+                optionsBlock = qb.fields.questionBlock.fields.optionsBlock;
+                break;
             }
         }
 
@@ -36,7 +35,7 @@ exports.lambdaHandler = async (event, context) => {
             headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'body': JSON.stringify({
                 customer: customer.fields,
-                blocks: questionBlock,
+                block: questionBlock,
                 optionsBlock: optionsBlock
             })
         }
